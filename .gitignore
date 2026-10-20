@@ -1,0 +1,21 @@
+# сборка
+bin/
+obj/
+publish/
+.vs/
+*.user
+
+# локальные настройки и секреты: в git не попадают
+app/config.json
+.env
+*.pem
+*.key
+
+# ядро Xray скачивается скриптом app/get-xray.ps1
+app/core/
+
+# прочее
+*.log
+node_modules/
+.DS_Store
+Thumbs.db

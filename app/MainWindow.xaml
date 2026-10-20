@@ -1,0 +1,14 @@
+<Window x:Class="SecurityVpn.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+        Title="Security VPN"
+        Width="440" Height="740"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="CanMinimize"
+        Background="#0B0724">
+    <Grid>
+        <wv2:WebView2 x:Name="Web" DefaultBackgroundColor="#0B0724" />
+    </Grid>
+</Window>

@@ -1,0 +1,10 @@
+[Unit]
+Description=Security VPN: запуск синхронизации каждые 10 секунд
+
+[Timer]
+OnBootSec=20s
+OnUnitActiveSec=10s
+AccuracySec=1s
+
+[Install]
+WantedBy=timers.target

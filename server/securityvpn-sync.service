@@ -1,0 +1,7 @@
+[Unit]
+Description=Security VPN: синхронизация пользователей с Xray
+After=mariadb.service network.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/php /opt/securityvpn/sync-xray.php

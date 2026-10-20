@@ -1,0 +1,9 @@
+* text=auto
+# скрипты для Linux-сервера должны оставаться с LF, иначе bash на сервере их не запустит
+*.sh        text eol=lf
+*.php       text eol=lf
+*.sql       text eol=lf
+*.tpl       text eol=lf
+*.service   text eol=lf
+*.timer     text eol=lf
+*.ps1       text eol=crlf

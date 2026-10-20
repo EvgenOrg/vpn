@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Security VPN</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <canvas id="planet" aria-hidden="true"></canvas>
+
+  <header class="titlebar" id="titlebar">
+    <div class="brand">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z"/><path d="M9.2 12.2l2 2 3.7-4"/></svg>
+      <span>Security VPN</span>
+    </div>
+    <div class="win">
+      <button type="button" id="btn-min" aria-label="Свернуть"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/></svg></button>
+      <button type="button" id="btn-close" class="close" aria-label="Закрыть"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    </div>
+  </header>
+
+  <!-- ===== Вход и регистрация ===== -->
+  <section id="screen-auth" class="screen hidden" aria-label="Вход">
+    <div class="hero">
+      <h1>Security VPN</h1>
+      <p class="slogan">Безопасность личных данных превыше всего</p>
+    </div>
+
+    <div id="config-error" class="notice hidden" role="alert"></div>
+
+    <div class="tabs" role="tablist">
+      <button type="button" role="tab" id="tab-login" aria-selected="true">Вход</button>
+      <button type="button" role="tab" id="tab-register" aria-selected="false">Регистрация</button>
+    </div>
+
+    <form id="auth-form" novalidate>
+      <input id="f-username" type="text" placeholder="Логин" maxlength="30" autocomplete="username" spellcheck="false" autocapitalize="off">
+      <div class="pw">
+        <input id="f-password" type="password" placeholder="Пароль" maxlength="72" autocomplete="current-password">
+        <button type="button" id="pw-toggle" class="icon-btn" aria-label="Показать пароль">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="2.8"/></svg>
+        </button>
+      </div>
+      <input id="f-repeat" class="hidden" type="password" placeholder="Повторите пароль" maxlength="72" autocomplete="new-password">
+      <input id="f-invite" class="hidden" type="text" placeholder="Код приглашения" maxlength="64" autocomplete="off" spellcheck="false">
+      <p id="auth-error" class="error" role="alert"></p>
+      <button type="submit" id="auth-submit" class="btn primary"><span>Войти</span></button>
+    </form>
+    <p class="hint">Пароль хранится на сервере только в виде хеша</p>
+  </section>
+
+  <!-- ===== Главный экран ===== -->
+  <section id="screen-main" class="screen hidden" aria-label="Подключение">
+    <div class="topline">
+      <button type="button" id="user-chip" class="chip" aria-haspopup="true" aria-expanded="false">
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.7-3.6 3.6-5.5 7-5.5s6.3 1.9 7 5.5"/></svg>
+        <span id="user-name"></span>
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+      </button>
+      <div id="user-menu" class="menu hidden" role="menu">
+        <button type="button" id="menu-password" role="menuitem">Сменить пароль</button>
+        <button type="button" id="menu-logout" role="menuitem">Выйти из аккаунта</button>
+      </div>
+    </div>
+
+    <div class="status" aria-live="polite">
+      <p id="status-text" class="status-text">Не защищено</p>
+      <div id="timer" class="timer">00:00:00</div>
+      <p id="status-sub" class="status-sub">&nbsp;</p>
+    </div>
+
+    <div class="fill"></div>
+
+    <button type="button" id="power" class="power" aria-label="Подключить">
+      <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v8"/><path d="M6.3 7.2a7.5 7.5 0 1 0 11.4 0"/></svg>
+    </button>
+
+    <div class="card server">
+      <div id="srv-code" class="code">··</div>
+      <div class="srv-meta">
+        <b id="srv-country">Сервер</b>
+        <span id="srv-city">&nbsp;</span>
+      </div>
+      <div class="srv-state" id="srv-state">Готов</div>
+    </div>
+
+    <div class="stats">
+      <div class="card tile">
+        <span class="lbl"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v12"/><path d="M6 11l6 6 6-6"/></svg>Загрузка</span>
+        <span class="val"><b id="st-down">0</b> <i id="st-down-u">кбит/с</i></span>
+      </div>
+      <div class="card tile">
+        <span class="lbl"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V8"/><path d="M6 13l6-6 6 6"/></svg>Отдача</span>
+        <span class="val"><b id="st-up">0</b> <i id="st-up-u">кбит/с</i></span>
+      </div>
+      <div class="card tile">
+        <span class="lbl"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2-6 4 12 2-6h6"/></svg>Пинг</span>
+        <span class="val"><b id="st-ping">—</b> <i>мс</i></span>
+      </div>
+    </div>
+
+    <p class="foot">Безопасность личных данных превыше всего</p>
+  </section>
+
+  <!-- ===== Смена пароля ===== -->
+  <dialog id="dlg-password">
+    <form id="pw-form" novalidate>
+      <h2>Смена пароля</h2>
+      <input id="p-old" type="password" placeholder="Текущий пароль" maxlength="72" autocomplete="current-password">
+      <input id="p-new" type="password" placeholder="Новый пароль (от 8 символов)" maxlength="72" autocomplete="new-password">
+      <input id="p-repeat" type="password" placeholder="Повторите новый пароль" maxlength="72" autocomplete="new-password">
+      <p id="pw-error" class="error" role="alert"></p>
+      <div class="row">
+        <button type="button" id="pw-cancel" class="btn ghost">Отмена</button>
+        <button type="submit" id="pw-submit" class="btn primary"><span>Сохранить</span></button>
+      </div>
+    </form>
+  </dialog>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="planet.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
